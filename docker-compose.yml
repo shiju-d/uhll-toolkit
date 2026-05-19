@@ -1,0 +1,28 @@
+services:
+  extract:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.extract
+    volumes:
+      - .:/app
+    command: node scripts/extract-data.js
+
+  test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.extract
+    volumes:
+      - .:/app
+    command: >
+      sh -c "node scripts/test-extract.mjs &&
+             node scripts/test-parser.mjs &&
+             node scripts/test-builder.mjs"
+
+  serve:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.serve
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/usr/share/nginx/html:ro
